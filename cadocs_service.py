@@ -28,8 +28,9 @@ def predict():
         message = message.replace([i[0] for i in ck_url][0], "LINK")
     re_date = r"((0[1-9]|1[0-2])[\/\.-](0[1-9]|[12][0-9]|3[01])[\/\.-](\d{4})$)"
     date = re.findall(re_date, message)
-    if date:
-        entities.update({"date": date[0][0]})
+    date_reformatted = re.sub(r"[-.]", "/", date[0][0])
+    if date_reformatted:
+        entities.update({"date": date_reformatted})
 
     result = {"intent": prediction_service.predict(
         message), "entities": entities}
