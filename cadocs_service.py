@@ -26,10 +26,10 @@ def predict():
     if ck_url:
         entities.update({"url": [i[0] for i in ck_url][0]})
         message = message.replace([i[0] for i in ck_url][0], "LINK")
-    re_date = r"((0[1-9]|1[0-2])[\/\.-](0[1-9]|[12][0-9]|3[01])[\/\.-](\d{4})$)"
+    re_date = r"((0[1-9]|1[0-2])[\/\.-](0[1-9]|[12][0-9]|3[01])[\/\.-](\d{4}))"
     date = re.findall(re_date, message)
-    date_reformatted = re.sub(r"[-.]", "/", date[0][0])
-    if date_reformatted:
+    if date:
+        date_reformatted = re.sub(r"[-.]", "/", date[0][0])
         entities.update({"date": date_reformatted})
 
     result = {"intent": prediction_service.predict(
