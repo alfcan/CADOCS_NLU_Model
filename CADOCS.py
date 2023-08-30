@@ -1,6 +1,7 @@
 import torch
 from transformers import RobertaTokenizer, RobertaForSequenceClassification
 from langdetect import detect
+from model_selector import ModelSelector
 
 import warnings
 
@@ -63,8 +64,9 @@ def get_prediction(model, request):
     return output_dict
 
 
-# Defining the interface of the strategy pattern
-class LanguageModel:
+# Defining the abstract class of the strategy pattern
+class LanguageModel(ABC):
+    @abstractmethod
     def give_prediction(self, message):
         pass
 
@@ -91,11 +93,11 @@ class EnglishModel(LanguageModel):
 class PredictionService:
     def predict(self, message):
         if self._is_italian(message):
-            self.language_model = ItalianModel()
+            model = ModelSelector(ItalianModel())
         else:
-            self.language_model = EnglishModel()
+            model = ModelSelector(EnglishModel())
 
-        return self.language_model.give_prediction(message)
+        return model.run(message)
 
     def _is_italian(self, message):
         try:
